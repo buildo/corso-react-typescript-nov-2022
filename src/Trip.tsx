@@ -1,5 +1,6 @@
 import * as styles from "./Trip.css";
 import * as models from "./models";
+import { useFormatDate } from "./locales/i18n";
 
 type Props = models.Trip;
 
@@ -14,10 +15,14 @@ export function Trip(props: Props) {
     }
   })();
 
+  const formatDate = useFormatDate();
+
   return (
     <div className={`${styles.trip} ${styles.tripStatus[props.status]}`}>
       <span>{`${props.origin} -> ${props.destination} ${seatNumber} `}</span>
-      <span>{`${props.startDate.toDateString()} -> ${props.endDate.toDateString()}`}</span>
+      <span>
+        {`${formatDate(props.startDate)} -> ${formatDate(props.endDate)}`}
+      </span>
     </div>
   );
 }
