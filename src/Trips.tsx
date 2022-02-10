@@ -1,9 +1,9 @@
 import { getTrips } from "./api";
+import { useTranslation } from "./locales/i18n";
 import { Trip } from "./Trip";
 import * as styles from "./Trips.css";
 import { useQuery } from "@tanstack/react-query";
 import { matchQuery } from "./utils/matchQuery";
-import { useTranslation } from "react-i18next";
 
 export function Trips() {
   const tripsQuery = useQuery({ queryKey: ["trips"], queryFn: getTrips });

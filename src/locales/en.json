@@ -7,5 +7,7 @@
   "Trips.deleteButton.success": "✅ Trip deleted!",
   "Trips.deleteButton.idle": "🗑 Delete trip",
   "LanguageSelector.English": "English",
-  "LanguageSelector.Italian": "Italiano"
+  "LanguageSelector.Italian": "Italiano",
+  "Trip.info": "{{origin}} -> {{destination}} {{seatNumber}}",
+  "Trip.dates": "From {{startDate}} to {{endDate}}"
 }
