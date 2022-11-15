@@ -2,21 +2,21 @@ import { getTrips } from "./api";
 import { Trip } from "./Trip";
 import * as styles from "./Trips.css";
 import { useQuery } from "@tanstack/react-query";
-import { ReactNode } from "react";
+import { matchQuery } from "./utils/matchQuery";
 
 export function Trips() {
-  const query = useQuery({ queryKey: ["trips"], queryFn: getTrips });
+  const tripsQuery = useQuery({ queryKey: ["trips"], queryFn: getTrips });
 
-  const content = ((): Exclude<ReactNode, undefined> => {
-    switch (query.status) {
-      case "success":
-        return query.data.map((trip) => <Trip key={trip.id} {...trip} />);
-      case "error":
-        return "Error while fetching trips!!";
-      case "loading":
-        return "Loading...";
-    }
-  })();
-
-  return <div className={styles.trips}>{content}</div>;
+  return (
+    <div className={styles.trips}>
+      {matchQuery(tripsQuery, {
+        success: (trips, isFetching) =>
+          isFetching
+            ? "Loading..."
+            : trips.map((trip) => <Trip key={trip.id} {...trip} />),
+        error: () => "Error while fetching trips!!",
+        loading: () => "Loading...",
+      })}
+    </div>
+  );
 }
