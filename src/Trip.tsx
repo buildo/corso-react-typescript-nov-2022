@@ -7,7 +7,8 @@ import { deleteTrip } from "./api";
 import { AsyncButton } from "./AsyncButton";
 import { useNavigate } from "react-router";
 import * as routes from "./routes";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
+import { matchRender } from "./utils/matchRender";
 
 type ConfirmDialogState =
   | {
@@ -42,46 +43,46 @@ export function Trip(props: Props) {
   const formatDate = useFormatDate();
   const navigate = useNavigate();
 
-  const renderConfirmModal = (): ReactNode => {
-    switch (confirmDialogState.status) {
-      case "closed":
-        return null;
-      case "open":
-        return (
-          <div className={styles.dialog}>
-            <h4>{confirmDialogState.message}</h4>
+  const renderConfirmModal = matchRender<
+    ConfirmDialogState,
+    ConfirmDialogState["status"],
+    "status"
+  >(confirmDialogState, confirmDialogState.status, {
+    closed: () => null,
+    open: (value) => (
+      <div className={styles.dialog}>
+        <h4>{value.message}</h4>
 
-            <div className={styles.dialogActions}>
-              <button
-                onClick={(e) => {
-                  updateConfirmDialogState({ status: "closed" });
-                  e.stopPropagation();
-                }}
-              >
-                {t("Trips.cancelDelete")}
-              </button>
+        <div className={styles.dialogActions}>
+          <button
+            onClick={(e) => {
+              updateConfirmDialogState({ status: "closed" });
+              e.stopPropagation();
+            }}
+          >
+            {t("Trips.cancelDelete")}
+          </button>
 
-              {/* separator */}
-              <div style={{ width: 16 }} />
+          {/* separator */}
+          <div style={{ width: 16 }} />
 
-              <AsyncButton
-                status={status}
-                onClick={(e) => {
-                  mutate(props.id);
-                  e.stopPropagation();
-                }}
-                labels={{
-                  loading: t("Trips.deleteButton.loading"),
-                  error: t("Trips.deleteButton.error"),
-                  success: t("Trips.deleteButton.success"),
-                  idle: t("Trips.deleteButton.idle"),
-                }}
-              />
-            </div>
-          </div>
-        );
-    }
-  };
+          <AsyncButton
+            status={status}
+            onClick={(e) => {
+              mutate(props.id);
+              e.stopPropagation();
+            }}
+            labels={{
+              loading: t("Trips.deleteButton.loading"),
+              error: t("Trips.deleteButton.error"),
+              success: t("Trips.deleteButton.success"),
+              idle: t("Trips.deleteButton.idle"),
+            }}
+          />
+        </div>
+      </div>
+    ),
+  });
 
   return (
     <div
@@ -118,7 +119,7 @@ export function Trip(props: Props) {
         </button>
       </div>
       <div className={styles.dialogOverlay[confirmDialogState.status]}>
-        {renderConfirmModal()}
+        {renderConfirmModal}
       </div>
     </div>
   );
