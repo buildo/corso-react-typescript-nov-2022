@@ -5,6 +5,7 @@ import { Span } from "./designSystem/Span";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTrip } from "./api";
 import { AsyncButton } from "./AsyncButton";
+import { useNavigate } from "react-router";
 
 type Props = models.Trip;
 
@@ -26,9 +27,13 @@ export function Trip(props: Props) {
 
   const { t } = useTranslation();
   const formatDate = useFormatDate();
+  const navigate = useNavigate();
 
   return (
-    <div className={`${styles.trip} ${styles.tripStatus[props.status]}`}>
+    <div
+      className={`${styles.trip} ${styles.tripStatus[props.status]}`}
+      onClick={() => navigate(`/trips/${props.id}`)}
+    >
       <Span>
         {t("Trip.info", {
           origin: props.origin,
@@ -46,7 +51,10 @@ export function Trip(props: Props) {
         <AsyncButton
           className={styles.deleteButton}
           status={status}
-          onClick={() => mutate(props.id)}
+          onClick={(e) => {
+            mutate(props.id);
+            e.stopPropagation();
+          }}
           labels={{
             loading: t("Trips.deleteButton.loading"),
             error: t("Trips.deleteButton.error"),

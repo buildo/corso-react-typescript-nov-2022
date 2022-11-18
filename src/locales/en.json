@@ -1,5 +1,6 @@
 {
   "MainLayout.Trips": "Trips",
+  "MainLayout.TripDetails": "Trip details",
   "Trips.QueryLoading": "Loading...",
   "Trips.QueryError": "Error while fetching trips!!",
   "Trips.deleteButton.loading": "⏳ Deleting trip...",
@@ -9,5 +10,9 @@
   "LanguageSelector.English": "English",
   "LanguageSelector.Italian": "Italiano",
   "Trip.info": "{{origin}} -> {{destination}} {{seatNumber}}",
-  "Trip.dates": "From {{startDate}} to {{endDate}}"
+  "Trip.dates": "From {{startDate}} to {{endDate}}",
+  "TripDetails.from": "From 🛫",
+  "TripDetails.to": "To 🛬",
+  "TripDetails.error": "Error while fetching trip!!",
+  "TripDetails.loading": "Loading..."
 }
