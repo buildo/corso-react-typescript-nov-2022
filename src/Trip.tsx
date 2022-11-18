@@ -9,7 +9,7 @@ type Props = models.Trip;
 
 export function Trip(props: Props) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(["deleteTrip"], deleteTrip, {
+  const { status, mutate } = useMutation(["deleteTrip"], deleteTrip, {
     onSuccess: () => queryClient.invalidateQueries(["trips"]),
   });
 
@@ -25,6 +25,19 @@ export function Trip(props: Props) {
 
   const { t } = useTranslation();
   const formatDate = useFormatDate();
+
+  const deleteButtonLabel = ((): string => {
+    switch (status) {
+      case "loading":
+        return t("Trips.deleteButton.loading");
+      case "error":
+        return t("Trips.deleteButton.error");
+      case "idle":
+        return t("Trips.deleteButton.idle");
+      case "success":
+        return t("Trips.deleteButton.success");
+    }
+  })();
 
   return (
     <div className={`${styles.trip} ${styles.tripStatus[props.status]}`}>
@@ -46,7 +59,7 @@ export function Trip(props: Props) {
           className={styles.deleteButton}
           onClick={() => mutate(props.id)}
         >
-          {t("Trips.deleteButton.idle")}
+          {deleteButtonLabel}
         </button>
       </div>
     </div>
