@@ -7,14 +7,24 @@ import { deleteTrip } from "./api";
 import { AsyncButton } from "./AsyncButton";
 import { useNavigate } from "react-router";
 import * as routes from "./routes";
+import { useState } from "react";
 
 type Props = models.Trip;
+
+type State =
+  | {
+      state: "ready";
+    }
+  | {
+      state: "confirmDelete";
+    };
 
 export function Trip(props: Props) {
   const queryClient = useQueryClient();
   const { status, mutate } = useMutation(["deleteTrip"], deleteTrip, {
     onSuccess: () => queryClient.invalidateQueries(["trips"]),
   });
+  const [state, updateState] = useState<State>({ state: "ready" });
 
   const seatNumber = ((): string => {
     switch (props.status) {
@@ -29,6 +39,51 @@ export function Trip(props: Props) {
   const { t } = useTranslation();
   const formatDate = useFormatDate();
   const navigate = useNavigate();
+
+  const renderDelete = (): React.ReactNode => {
+    switch (state.state) {
+      case "ready":
+        return (
+          <button
+            className={styles.tripButton}
+            onClick={(e) => {
+              updateState({ state: "confirmDelete" });
+              e.stopPropagation();
+            }}
+          >
+            {t("Trips.deleteButton.idle")}
+          </button>
+        );
+      case "confirmDelete":
+        return (
+          <>
+            <button
+              className={styles.tripButton}
+              onClick={(e) => {
+                updateState({ state: "ready" });
+                e.stopPropagation();
+              }}
+            >
+              {t("Trips.deleteCancel")}
+            </button>
+            <AsyncButton
+              className={styles.tripButton}
+              onClick={(e) => {
+                mutate(props.id);
+                e.stopPropagation();
+              }}
+              status={status}
+              labels={{
+                loading: t("Trips.deleteButton.loading"),
+                error: t("Trips.deleteButton.error"),
+                success: t("Trips.deleteButton.success"),
+                idle: t("Trips.deleteButton.confirm"),
+              }}
+            />
+          </>
+        );
+    }
+  };
 
   return (
     <div
@@ -49,20 +104,7 @@ export function Trip(props: Props) {
             endDate: formatDate(props.endDate),
           })}
         </Span>
-        <AsyncButton
-          className={styles.deleteButton}
-          status={status}
-          onClick={(e) => {
-            mutate(props.id);
-            e.stopPropagation();
-          }}
-          labels={{
-            loading: t("Trips.deleteButton.loading"),
-            error: t("Trips.deleteButton.error"),
-            success: t("Trips.deleteButton.success"),
-            idle: t("Trips.deleteButton.idle"),
-          }}
-        />
+        {renderDelete()}
       </div>
     </div>
   );
