@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTrip } from "./api";
 import { AsyncButton } from "./AsyncButton";
 import { useNavigate } from "react-router";
+import * as routes from "./routes";
 
 type Props = models.Trip;
 
@@ -32,7 +33,7 @@ export function Trip(props: Props) {
   return (
     <div
       className={`${styles.trip} ${styles.tripStatus[props.status]}`}
-      onClick={() => navigate(`/trips/${props.id}`)}
+      onClick={() => navigate(routes.trip({ tripId: String(props.id) }))}
     >
       <Span>
         {t("Trip.info", {

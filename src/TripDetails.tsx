@@ -6,9 +6,10 @@ import { matchQuery } from "./utils/matchQuery";
 import { unsafeTranslatedString, useTranslation } from "./locales/i18n";
 import { useFormatDate } from "./locales/i18n";
 import { Span } from "./designSystem/Span";
+import * as routes from "./routes";
 
 export function TripDetails() {
-  const params = useParams<"tripId">();
+  const params = useParams<keyof routes.TripParams>();
   const tripId = params.tripId!;
   const { t } = useTranslation();
   const formatDate = useFormatDate();
