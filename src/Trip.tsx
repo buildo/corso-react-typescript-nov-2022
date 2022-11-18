@@ -4,6 +4,7 @@ import { useFormatDate, useTranslation } from "./locales/i18n";
 import { Span } from "./designSystem/Span";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTrip } from "./api";
+import { AsyncButton } from "./AsyncButton";
 
 type Props = models.Trip;
 
@@ -26,19 +27,6 @@ export function Trip(props: Props) {
   const { t } = useTranslation();
   const formatDate = useFormatDate();
 
-  const deleteButtonLabel = ((): string => {
-    switch (status) {
-      case "loading":
-        return t("Trips.deleteButton.loading");
-      case "error":
-        return t("Trips.deleteButton.error");
-      case "idle":
-        return t("Trips.deleteButton.idle");
-      case "success":
-        return t("Trips.deleteButton.success");
-    }
-  })();
-
   return (
     <div className={`${styles.trip} ${styles.tripStatus[props.status]}`}>
       <Span>
@@ -55,12 +43,17 @@ export function Trip(props: Props) {
             endDate: formatDate(props.endDate),
           })}
         </Span>
-        <button
+        <AsyncButton
           className={styles.deleteButton}
+          status={status}
           onClick={() => mutate(props.id)}
-        >
-          {deleteButtonLabel}
-        </button>
+          labels={{
+            loading: t("Trips.deleteButton.loading"),
+            error: t("Trips.deleteButton.error"),
+            success: t("Trips.deleteButton.success"),
+            idle: t("Trips.deleteButton.idle"),
+          }}
+        />
       </div>
     </div>
   );
